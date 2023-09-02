@@ -1,23 +1,19 @@
 import { useState } from "react";
+import { TodoFrom } from "./TodoForm";
+import { TodoList } from "./TodoList";
 import "./styles.css";
 
 export default function App() {
-  const [newItem, setNewItem] = useState("");
   const [todos, setTodos] = useState([]);
 
-  function handleSubmit(e){
-    e.preventDefault();
-    // prevents refreshing the page every time
-
+  function addTodo(title){
     setTodos((currTodos) => {
       return[
         ...currTodos,
-        {id: crypto.randomUUID(), title: newItem, completed: false}
+        {id: crypto.randomUUID(), title, completed: false}
       ];
     });
-
-    setNewItem("");
-  };
+  }
 
   function toggleTodo(id, completed){
     setTodos((currTodos) => {
@@ -37,42 +33,12 @@ export default function App() {
 
   return (
     <> 
-    <form
-    onSubmit={handleSubmit}
-     className="new-item-form">
-      <div className="form-row">
-        <label htmlFor="item">New Item</label>
-        <input 
-        value={newItem}
-        onChange={(e) => setNewItem(e.target.value)}
-         type="text" id="item" />
-        <button className="btn">Add</button>
-      </div>
-    </form>
+
+    <TodoFrom compProp={addTodo}/>
 
     <h1 className="header">TO-DO List</h1>
 
-    <ul className="list">
-      {todos.length === 0 && "NO TO-DOS"}
-      {todos.map((todo) => {
-        return(
-          <li key={todo.id}>
-          <label>
-            <input 
-            type="checkbox" 
-            checked={todo.completed}
-            onChange={(e) => toggleTodo(todo.id, e.target.checked)}/>
-            {todo.title}
-          </label>
-          <button 
-          onClick={() => deleteTodo(todo.id)}
-          className="btn btn-danger">Delete</button>
-          {/* deteleTodo is after a calback function beacuse without callback it will automatically delete the todos without get checked */}
-
-          {/* () => --> callback function is used to get onclick then it will call the deleteTodo without callback it will delete the todos binna click kiye */}
-      </li>
-        )})}
-    </ul>
+    <TodoList todos={todos} toggleTodo={toggleTodo} deleteTodo={deleteTodo}/>
     </>
   );
 };
